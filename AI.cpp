@@ -219,7 +219,7 @@ unsigned short AI::MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned 
 		{
 			fuf.Fire(fuf.posx, fuf.posy);
 			clCUI.GotoXY(fuf.posx + 11, fuf.posy + 11);
-			clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
+			clCUI.SetColor(clCUI.LightRed, clCUI.LightBlue);
 			printf("%c", fuf.hit);
 			clCUI.SetColor(clCUI.White, clCUI.Black);
 			cellcount--;
@@ -228,7 +228,7 @@ unsigned short AI::MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned 
 		{
 			fuf.Miss(fuf.posx, fuf.posy);
 			clCUI.GotoXY(fuf.posx + 11, fuf.posy + 11);
-			clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
+			clCUI.SetColor(clCUI.LightRed, clCUI.LightBlue);
 			printf("%c", fuf.miss);
 			clCUI.SetColor(clCUI.White, clCUI.Black);
 			isturn = false;

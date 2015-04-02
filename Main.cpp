@@ -25,10 +25,10 @@ bool PlaceShips(CUI clCUI, AI art, Field& fuf, Field& fcf)
 	dir sd = 'h';
 	units len = 1;
 	unsigned short  count1 = 4,
-					count2 = 3,
-					count3 = 2,
-					count4 = 1,
-					currc  = 0;
+			count2 = 3,
+			count3 = 2,
+			count4 = 1,
+			currc  = 0;
 	clCUI.PrintGame(fuf, fcf);
 	clCUI.SetCursor(fuf, clCUI.x + 1, clCUI.y + 1);
 	clCUI.SetAim(fuf);
@@ -332,7 +332,7 @@ int main()
 			c_wins++;
 			break;
 		}
-		printf("\n\tWinner statistic\nPlayer 1: %d, Player 2: %d\n", c_wins, p_wins);
+		printf("\n\tWinner statistic\nPlayer 1: %d, Player 2: %d\n", p_wins, c_wins);
 		printf("Would you like to play again? (y/n): ");
 		reply = _getch();
 		while (reply != 'y' && reply != 'n')

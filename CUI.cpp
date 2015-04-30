@@ -14,7 +14,7 @@ CUI::~CUI()
 
 }
 
-void CUI::GotoXY(int xx, int yy)	//Fecit per asini.
+void CUI::GotoXY(int xx, int yy)			//Fecit per asini.
 {
 	COORD coord = { xx, yy };
 	SetConsoleCursorPosition(hStdOut, coord);
@@ -31,32 +31,17 @@ void CUI::Draw(Field& f)					//Verpa et feces caninae sunt!
 	cstate st = f.GetPosVal();
 	if (st == f.up || st == f.down || st == f.left || st == f.right || st == f.onesh || st == f.body || st == f.water)
 	{
-		SetColor(DarkGray, LightBlue);
+		SetColor(clship, clback);
 		if (f.owner == COMP) printf("%c", f.water);
 		else printf("%c", st);
 	}
 	if (st == f.miss || st == f.hit)
 	{
-		SetColor(LightRed, LightBlue);
+		if (st == f.miss) SetColor(clmiss, clback);
+		else SetColor(clhit, clback);
 		printf("%c", st);
 	}
-	SetColor(White, Black);
-}
-
-void CUI::Fire(units px, units py, bool who)
-{
-	SetColor(DarkGray, LightBlue);
-	if (who == PLAYER) GotoXY(px + 2 * x + 2, py + y + 1);
-	else GotoXY(px + x + 1, py + y + 1);
-	printf("%c", 0xB0);
-}
-
-void CUI::Miss(units px, units py, bool who)
-{
-	SetColor(DarkGray, LightBlue);
-	if (who == PLAYER) GotoXY(px + 2 * x + 2, py + y + 1);
-	else GotoXY(px + x + 1, py + y + 1);
-	printf("%c", 0x0F);
+	SetColor(cldef, clbdef);
 }
 
 void CUI::SetCursor(Field& f, unsigned short fx, unsigned short fy)
@@ -67,9 +52,9 @@ void CUI::SetCursor(Field& f, unsigned short fx, unsigned short fy)
 
 void CUI::SetAim(Field& f)
 {
-	SetColor(Yellow, LightBlue);
+	SetColor(claim, clback);
 	printf("%c", '+');
-	SetColor(White, Black);
+	SetColor(cldef, clbdef);
 }
 
 void CUI::MoveAim(dir where, Field& f, bool who)
@@ -79,56 +64,56 @@ void CUI::MoveAim(dir where, Field& f, bool who)
 	case ('u') :
 		if (f.posy == 0) break;
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		Draw(f);
-		SetColor(Yellow, LightBlue);
+		SetColor(claim, clback);
 		f.SetPos(f.posx, --f.posy);
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		printf("%c", '+');
 		break;
 	case ('d') :
 		if (f.posy == f.Height() - 1) break;
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		Draw(f);
-		SetColor(Yellow, LightBlue);
+		SetColor(claim, clback);
 		f.SetPos(f.posx, ++f.posy);
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		printf("%c", '+');
 		break;
 	case ('l') :
 		if (f.posx == 0) break;
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		Draw(f);
-		SetColor(Yellow, LightBlue);
+		SetColor(claim, clback);
 		f.SetPos(--f.posx, f.posy);
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		printf("%c", '+');
 		break;
 	case ('r') :
 		if (f.posx == f.Width() - 1) break;
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		Draw(f);
-		SetColor(Yellow, LightBlue);
+		SetColor(claim, clback);
 		f.SetPos(++f.posx, f.posy);
 		if (who == PLAYER) GotoXY(f.posx + x + 1, f.posy + y + 1);
-		if (who == COMP)   GotoXY(f.posx + 2 * x + 2, f.posy + y + 1);
+		if (who == COMP)   GotoXY(f.posx + x + f.Width() + 2, f.posy + y + 1);
 		printf("%c", '+');
 		break;
 	}
-	SetColor(White, Black);
+	SetColor(cldef, clbdef);
 }
 
 void CUI::PrintFrame()
 {
 	//*** Corners of the frame. ***
 
-	SetColor(LightCyan, Cyan);
+	SetColor(clframe, clbframe);
 	GotoXY(x, y);								printf("\xC9");
 	GotoXY(x + _w + 1, y);						printf("\xCB");
 	GotoXY(x + 2 * _w + 2, y);					printf("\xBB");
@@ -161,7 +146,7 @@ void CUI::PrintFrame()
 		GotoXY(ix + 2 * _w + 2, iy);			printf("\xBA");
 		iy++;
 	}
-	SetColor(White, Black);
+	SetColor(cldef, clbdef);
 }
 
 void CUI::PrintField(Field& f)
@@ -176,16 +161,56 @@ void CUI::PrintField(Field& f)
 		fx = w - xx;
 		fy = h - y - 1;
 		f.SetPos(fx, fy);
-		SetColor(DarkGray, LightBlue);
+		SetColor(clship, clback);
 		printf("%c", (char)f.GetPosVal());
 	}
 	GotoXY(x, y + _h + 3);
-	SetColor(White, Black);
+	SetColor(cldef, clbdef);
 }
 
 void CUI::PrintGame(Field& cf, Field& uf)
 {
+	system("cls");
+	this->PrintWin();
 	this->PrintFrame();
 	this->PrintField(uf);
 	this->PrintField(cf);
 }
+
+void CUI::PrintWin()
+{
+	int i;
+	SetColor(clframe, clbframe);
+	GotoXY(0, 0);
+	for (i = 0; i != 37; i++) printf("%c", 0x20);
+	printf("SEAKER");
+	for (i = 0; i != 37; i++) printf("%c", 0x20);
+	GotoXY(0, 1);
+	for (i = 0; i != 80; i++) printf("%c", 0xC4);
+}
+
+void CUI::InitFields()
+{
+
+}
+
+void CUI::InitAI()
+{
+
+}
+
+void CUI::UpdateFields()
+{
+
+}
+
+void CUI::StartGame()
+{
+
+}
+
+void CUI::EndGame()
+{
+
+}
+

@@ -29,7 +29,7 @@ void Field::Wipe()
 
 cstate Field::GetCell(units w, units h)
 {
-	if (w < 0 || w >= wc || h < 0 || h >= hc) return err;
+	if (w >= wc || h >= hc) return err;
 	else return cells[w][h];
 }
 
@@ -56,7 +56,7 @@ bool Field::CreateShip(units x, units y, units l, dir vdir)
 	bool isplaced = false;
 	short it = 0;
 	if (ShipSpaceIsChecked(x, y, l, vdir))
-		{
+	{
 		if (l == 1)
 		{
 			SetCell(x, y, onesh);
@@ -92,55 +92,55 @@ bool Field::CenterCellSpaceIsChecked(units cellx, units celly, units le, dir di,
 	case ('h') :
 		if (ord == 1)
 		{
-			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly - 1) != water && this->GetCell(cellx - 1, celly - 1) != err) || (this->GetCell(cellx - 1, celly + 1) != water && this->GetCell(cellx - 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly - 1) != water && this->GetCell(cellx - 1, celly - 1) != err) || (this->GetCell(cellx - 1, celly + 1) != water && this->GetCell(cellx - 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 			{
 				b = false;
-				goto e;
+				return b;
 			}
 			break;
 		}
 		if (ord == le)
 		{
-			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx + 1, celly - 1) != water && this->GetCell(cellx + 1, celly - 1) != err) || (this->GetCell(cellx + 1, celly + 1) != water && this->GetCell(cellx + 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx + 1, celly - 1) != water && this->GetCell(cellx + 1, celly - 1) != err) || (this->GetCell(cellx + 1, celly + 1) != water && this->GetCell(cellx + 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 			{
 				b = false;
-				goto e;
+				return b;
 			}
 			break;
 		}
-		else if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+		else if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 		{
 			b = false;
-			goto e;
+			return b;
 		}
 		break;
 	case ('v') :
 		if (ord == 1)
 		{
-			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly - 1) != water && this->GetCell(cellx - 1, celly - 1) != err) || (this->GetCell(cellx + 1, celly - 1) != water && this->GetCell(cellx + 1, celly - 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+			if ((this->GetCell(cellx, celly - 1) != water && this->GetCell(cellx, celly - 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly - 1) != water && this->GetCell(cellx - 1, celly - 1) != err) || (this->GetCell(cellx + 1, celly - 1) != water && this->GetCell(cellx + 1, celly - 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 			{
 				b = false;
-				goto e;
+				return b;
 			}
 			break;
 		}
 		if (ord == le)
 		{
-			if ((this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly + 1) != water && this->GetCell(cellx - 1, celly + 1) != err) || (this->GetCell(cellx + 1, celly + 1) != water && this->GetCell(cellx + 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+			if ((this->GetCell(cellx, celly + 1) != water && this->GetCell(cellx, celly + 1) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx - 1, celly + 1) != water && this->GetCell(cellx - 1, celly + 1) != err) || (this->GetCell(cellx + 1, celly + 1) != water && this->GetCell(cellx + 1, celly + 1) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 			{
 				b = false;
-				goto e;
+				return b;
 			}
 			break;
 		}
-		else if ((this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err))
+		else if ((this->GetCell(cellx - 1, celly) != water && this->GetCell(cellx - 1, celly) != err) || (this->GetCell(cellx + 1, celly) != water && this->GetCell(cellx + 1, celly) != err) || (this->GetCell(cellx, celly) != water && this->GetCell(cellx, celly) != err) || this->GetCell(cellx, celly) == err)
 		{
 			b = false;
-			goto e;
+			return b;
 		}
 		break;
 	}
-	e: return b;
+	return b;
 }
 
 bool Field::ShipSpaceIsChecked(units x, units y, units l, dir vdir)
@@ -153,7 +153,7 @@ bool Field::ShipSpaceIsChecked(units x, units y, units l, dir vdir)
 		if ((this->GetCell(x, y + 1) != water && this->GetCell(x, y + 1) != err) || (this->GetCell(x + 1, y) != water && this->GetCell(x + 1, y) != err) || (this->GetCell(x - 1, y) != water && this->GetCell(x - 1, y) != err) || (this->GetCell(x, y - 1) != water && this->GetCell(x, y - 1) != err) || (this->GetCell(x + 1, y + 1) != water && this->GetCell(x + 1, y + 1) != err) || (this->GetCell(x + 1, y - 1) != water && this->GetCell(x + 1, y - 1) != err) || (this->GetCell(x - 1, y + 1) != water && this->GetCell(x - 1, y + 1) != err) || (this->GetCell(x - 1, y - 1) != water && this->GetCell(x - 1, y - 1) != err) || (this->GetCell(x, y) != water && this->GetCell(x, y) != err))
 		{
 			b = false;
-			goto ex;
+			return b;
 		}
 	}
 	switch (vdir)
@@ -161,10 +161,10 @@ bool Field::ShipSpaceIsChecked(units x, units y, units l, dir vdir)
 	case ('h') :
 		for (vx; vx <= l - 1 + x; vx++)
 		{
-			if (!this->CenterCellSpaceIsChecked(vx, vy, l, vdir, order))
+			if (!CenterCellSpaceIsChecked(vx, vy, l, vdir, order))
 			{
 				b = false;
-				goto ex;
+				return b;
 			}
 			order++;
 		}
@@ -175,21 +175,31 @@ bool Field::ShipSpaceIsChecked(units x, units y, units l, dir vdir)
 			if (!CenterCellSpaceIsChecked(vx, vy, l, vdir, order))
 			{
 				b = false;
-				goto ex;
+				return b;
 			}
 			order++;
 		}
 		break;
 	}
-ex:	return b;
+	return b;
 }
 
-void Field::Fire(units px, units py)
+void Aftermath(units px, units py)
 {
-	this->SetCell(px, py, this->hit);
+
 }
 
-void Field::Miss(units px, units py)
+unsigned short Field::Fire(units px, units py, unsigned short cellcount)
 {
-	this->SetCell(px, py, this->miss);
+	cstate st = this->GetPosVal();
+	if (st != this->water && st != this->hit && st != this->miss)
+	{
+		SetCell(px, py, hit);
+		cellcount--;
+	}
+	else if (st == this->water)
+	{
+		SetCell(px, py, miss);
+	}
+	return cellcount;
 }

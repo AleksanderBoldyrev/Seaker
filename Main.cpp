@@ -1,9 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <conio.h>
-#include <cstdlib>
-#include <ctime>
-#include <cstring>
 #include <iostream>
 
 using namespace std;
@@ -15,8 +9,21 @@ using namespace std;
 #include "Field.h"
 #include "Ship.h"
 
+unsigned short shipspl[5];
+unsigned short shipsai[5];
+
 bool PlaceShips(CUI clCUI, AI art, Field& fuf, Field& fcf)
 {
+	shipspl[0] = 10;
+	shipspl[1] = 4;
+	shipspl[2] = 3;
+	shipspl[3] = 2;
+	shipspl[4] = 1;
+	shipsai[0] = 10;
+	shipsai[1] = 4;
+	shipsai[2] = 3;
+	shipsai[3] = 2;
+	shipsai[4] = 1;
 	system("cls");
 	printf("Now you should arrange your ships on the board.");
 	bool sucplace = false;
@@ -25,10 +32,10 @@ bool PlaceShips(CUI clCUI, AI art, Field& fuf, Field& fcf)
 	dir sd = 'h';
 	units len = 1;
 	unsigned short  count1 = 4,
-			count2 = 3,
-			count3 = 2,
-			count4 = 1,
-			currc  = 0;
+					count2 = 3,
+					count3 = 2,
+					count4 = 1,
+					currc  = 0;
 	clCUI.PrintGame(fuf, fcf);
 	clCUI.SetCursor(fuf, clCUI.x + 1, clCUI.y + 1);
 	clCUI.SetAim(fuf);
@@ -149,12 +156,12 @@ bool PlaceShips(CUI clCUI, AI art, Field& fuf, Field& fcf)
 			else if (sd == 'v') sd = 'h';
 			break;
 		case (0x78) :					//*** 'x' ***
-			goto ex;
+			exit(0);
 			break;
 		default: continue;
 		}
 	}
-	ex: return sucplace;
+	return sucplace;
 }
 
 unsigned short MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned short cellcount)
@@ -162,11 +169,9 @@ unsigned short MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned shor
 
 	bool isturn = true;
 	unsigned short key;
-	clCUI.GotoXY(0, 0);
-	for (int i = 0; i <= 80; i++) printf(" ");
-	clCUI.GotoXY(0, 0);
+	clCUI.GotoXY(2 + fuf.Width(), 18 + fuf.Height());
 	printf("Now is the turn of the player.");
-	clCUI.SetCursor(fcf, 2 * clCUI.x + 2, clCUI.y + 1);
+	clCUI.SetCursor(fcf, fuf.Width() + clCUI.x + 2, clCUI.y + 1);
 	clCUI.SetAim(fcf);
 	fcf.posx = 0;
 	fcf.posy = 0;
@@ -190,24 +195,25 @@ unsigned short MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned shor
 			clCUI.MoveAim('r', fcf, COMP);
 			break;
 		case (0x66) :					//*** 'f' ***
+			cellcount = fcf.Fire(fcf.posx, fcf.posy, cellcount);
 			if (st != fcf.water && st != fcf.hit && st != fcf.miss)
 			{
-				fcf.Fire(fcf.posx, fcf.posy);
-				clCUI.GotoXY(fcf.posx + 22, fcf.posy + 11);
+				clCUI.GotoXY(fcf.posx + clCUI.x + fcf.Width() + 2, fcf.posy + clCUI.y + 1);
 				clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
 				printf("%c", fcf.hit);
 				clCUI.SetColor(clCUI.White, clCUI.Black);
-				cellcount--;
 			}
 			else if (st == fcf.water)
 			{
-				fcf.Miss(fcf.posx, fcf.posy);
-				clCUI.GotoXY(fcf.posx + 22, fcf.posy + 11);
-				clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
+				clCUI.GotoXY(fcf.posx + clCUI.x + fcf.Width() + 2, fcf.posy + clCUI.y + 1);
+				clCUI.SetColor(clCUI.LightCyan, clCUI.LightBlue);
 				printf("%c", fcf.miss);
 				clCUI.SetColor(clCUI.White, clCUI.Black);
 				isturn = false;
 			}
+			break;
+		case (0x78) :					//*** 'x' ***
+			exit(0);
 			break;
 		default: continue;
 		}
@@ -258,7 +264,7 @@ bool PlayTheGame(CUI clCUI, AI art, Field& fiu, Field& fic, bool turn)
 
 int main()
 {
-	units w, h;
+	units w, h, lv;
 
 	const unsigned short MAX_STRLEN = 80;
 
@@ -268,30 +274,31 @@ int main()
 	printf("Enter your name: ");
 	gets(nam);
 	pl1.SetName(nam);
-	printf("Field of which length do you wish to create? ");
+	printf("Field of which length do you wish to create? (10..80) ");
 	scanf("%d", &w);
 	while (w < 10 || w > 80)
 	{
-		printf("Please enter a valid number: (10..80) ");
+		printf("\nPlease enter a valid number: (10..80) ");
 		scanf("%d", &w);
 	}
-	printf("Field of which height do you wish to create? ");
+	printf("Field of which height do you wish to create? (10..80) ");
 	scanf("%d", &h);
 	while (h < 10 || h > 80)
 	{
-		printf("Please enter a valid number: (10..80) ");
+		printf("\nPlease enter a valid number: (10..80) ");
 		scanf("%d", &h);
 	}
-	
-	CUI clGUI(w, h);
-
+	printf("What type of AI do you want to play with? (1|0) ");
+	scanf("%d", &lv);
+	while (lv < 0 || lv > 1)
+	{
+		printf("\nPlease enter a valid number: (1|0) ");
+		scanf("%d", &lv);
+	}
+	artint.Setlevel(lv);
+	CUI   clGUI(w, h);
 	Field fc(COMP, w, h);
 	Field fu(PLAYER, w, h);
-
-	clGUI.PrintGame(fu, fc);
-
-	printf("Press any key. \n");
-	_getch();
 
 	//*** Here thy game begins ***
 
@@ -305,7 +312,7 @@ int main()
 	reply = _getch();
 	while (reply != 'y' && reply != 'n')
 	{
-		printf("Please enter a valid reply (y/n):");
+		printf("\nPlease enter a valid reply (y/n):");
 		reply = _getch();
 	}
 
@@ -316,7 +323,7 @@ int main()
 		system("cls");
 		fu.Wipe();
 		fc.Wipe();
-
+		
 		bool winner = PlayTheGame(clGUI, artint, fu, fc, turn);
 		clGUI.PrintGame(fu, fc);
 		printf("Press any key. ");
@@ -337,7 +344,7 @@ int main()
 		reply = _getch();
 		while (reply != 'y' && reply != 'n')
 		{
-			printf("Please enter a valid reply (y/n):");
+			printf("\nPlease enter a valid reply (y/n):");
 			reply = _getch();
 		}
 	}

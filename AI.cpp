@@ -20,8 +20,9 @@ void AI::Setlevel(bool lv)
 	level = lv;
 }
 
-void AI::PlaceShipsAI(Field& fcf)
+void AI::PlaceShipsAI(CUI* clCUI, Field* fcf)
 {
+	
 	srand((unsigned)time(0));
 	bool isfirst = true;
 	units x = 0, y = 0, sdnum;
@@ -51,11 +52,11 @@ void AI::PlaceShipsAI(Field& fcf)
 		case(1) :
 			if (count1 != 0)
 			{
-				x = rand() % fcf.Width();
-				y = rand() % fcf.Height();
+				x = rand() % fcf->Width();
+				y = rand() % fcf->Height();
 				count1--;
 				currcc -= 1;
-				if (!fcf.CreateShip(x, y, len, sd)) switch (len)
+				if (!fcf->CreateShip(x, y, len, sd)) switch (len)
 				{
 				case(1) :
 					count1++;
@@ -74,6 +75,7 @@ void AI::PlaceShipsAI(Field& fcf)
 					currcc += 4;
 					break;
 				}
+				else clCUI->AddShipState(COMP, 1, 10);
 			}
 			else continue;
 			break;
@@ -83,17 +85,17 @@ void AI::PlaceShipsAI(Field& fcf)
 				switch (sd)
 				{
 				case ('h') :
-					x = rand() % (fcf.Width() - 1);
-					y = rand() % fcf.Height();
+					x = rand() % (fcf->Width() - 1);
+					y = rand() % fcf->Height();
 					break;
 				case ('v') :
-					x = rand() % fcf.Width();
-					y = rand() % (fcf.Height() - 1);
+					x = rand() % fcf->Width();
+					y = rand() % (fcf->Height() - 1);
 					break;
 				}
 				count2--;
 				currcc -= 2;
-				if (!fcf.CreateShip(x, y, len, sd)) switch (len)
+				if (!fcf->CreateShip(x, y, len, sd)) switch (len)
 				{
 				case(1) :
 					count1++;
@@ -112,6 +114,7 @@ void AI::PlaceShipsAI(Field& fcf)
 					currcc += 4;
 					break;
 				}
+				else clCUI->AddShipState(COMP, 2, 10);
 			}
 			else continue;
 			break;
@@ -121,17 +124,17 @@ void AI::PlaceShipsAI(Field& fcf)
 				switch (sd)
 				{
 				case ('h') :
-					x = rand() % (fcf.Width() - 2);
-					y = rand() % fcf.Height();
+					x = rand() % (fcf->Width() - 2);
+					y = rand() % fcf->Height();
 					break;
 				case ('v') :
-					x = rand() % fcf.Width();
-					y = rand() % (fcf.Height() - 2);
+					x = rand() % fcf->Width();
+					y = rand() % (fcf->Height() - 2);
 					break;
 				}
 				count3--;
 				currcc -= 3;
-				if (!fcf.CreateShip(x, y, len, sd)) switch (len)
+				if (!fcf->CreateShip(x, y, len, sd)) switch (len)
 				{
 				case(1) :
 					count1++;
@@ -150,7 +153,7 @@ void AI::PlaceShipsAI(Field& fcf)
 					currcc += 4;
 					break;
 				}
-
+				else clCUI->AddShipState(COMP, 3, 10);
 			}
 			else continue;
 			break;
@@ -160,17 +163,17 @@ void AI::PlaceShipsAI(Field& fcf)
 				switch (sd)
 				{
 				case ('h') :
-					x = rand() % (fcf.Width() - 3);
-					y = rand() % fcf.Height();
+					x = rand() % (fcf->Width() - 3);
+					y = rand() % fcf->Height();
 					break;
 				case ('v') :
-					x = rand() % fcf.Width();
-					y = rand() % (fcf.Height() - 3);
+					x = rand() % fcf->Width();
+					y = rand() % (fcf->Height() - 3);
 					break;
 				}
 				count4--;
 				currcc -= 4;
-				if (!fcf.CreateShip(x, y, len, sd)) switch (len)
+				if (!fcf->CreateShip(x, y, len, sd)) switch (len)
 				{
 				case(1) :
 					count1++;
@@ -189,6 +192,7 @@ void AI::PlaceShipsAI(Field& fcf)
 					currcc += 4;
 					break;
 				}
+				else clCUI->AddShipState(COMP, 4, 10);
 			}
 			else continue;
 			break;
@@ -196,177 +200,158 @@ void AI::PlaceShipsAI(Field& fcf)
 	}
 }
 
-bool AI::PieceOfShip(cstate s, Field fuf)
+bool AI::PieceOfShip(cstate s, Field* fuf)
 {
 	bool isp = false;
-	if (s == fuf.body || s == fuf.left || s == fuf.right || s == fuf.onesh || s == fuf.up || s == fuf.down) isp = true;
+	if (s == fuf->body || s == fuf->left || s == fuf->right || s == fuf->onesh || s == fuf->up || s == fuf->down) isp = true;
 	return isp;
 }
 
-bool AI::CheckSingleShip(Field& fuf)
+void AI::MakeMove(CUI* clCUI, AI* art, Field* fuf, Field* fcf)
 {
-	bool issing = true;
-	if (fuf.posx > 0)
-	{
-		fuf.posx--;
-		cstate stl = fuf.GetPosVal();
-		if (PieceOfShip(stl, fuf)) issing = false;
-		fuf.posx++;
-	}
-	if (fuf.posx < fuf.Width())
-	{
-		fuf.posx++; fuf.posx++;
-		cstate str = fuf.GetPosVal();
-		if (PieceOfShip(str, fuf)) issing = false;
-		fuf.posx--; fuf.posx--;
-	}
-	if (fuf.posx > 0 && fuf.posy > 0)
-	{
-		fuf.posx--; fuf.posy--;
-		cstate stu = fuf.GetPosVal();
-		if (PieceOfShip(stu, fuf)) issing = false;
-		fuf.posx++; fuf.posy++;
-	}
-	if (fuf.posx < fuf.Width() && fuf.posy < fuf.Height())
-	{
-		fuf.posy++; fuf.posy++;
-		cstate std = fuf.GetPosVal();
-		if (PieceOfShip(std, fuf)) issing = false;
-		fuf.posy--; fuf.posy--;
-	}
-	return issing;
-}
-
-unsigned short AI::MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned short cellcount)
-{
+	unsigned short clen;
 	srand((unsigned)time(0));
 	Sleep(500);
 	bool isfirst = true;
 	bool isturn  = true;
+	bool nextship = true;
 	bool hardchoice = true;
+	static bool wasmiss = false;
 	unsigned short dir = 0;
 	units x = 0, y = 0;
-	clCUI.GotoXY(2 + fuf.Width(), 18 + fuf.Height());
-	printf("Now is the turn of the computer.");
-	clCUI.SetCursor(fuf, clCUI.x + 1, clCUI.y + 1);
+	clCUI->SetCursor(fuf, clCUI->x + 1, clCUI->y + 1);
 	switch (this->level)
 	{
 	case (1) :						//*** Hard level. ***
-		while (cellcount > 0 && isturn)
+		while (fuf->shipsnum[0] > 0 && isturn)
 		{
 			Sleep(500);
 			cstate st;
-			if (isshot)
+			if ((isshot || wasmiss) && !nextship)
 			{
-				fuf.posx;
-				fuf.posy;
+				fuf->posx;
+				fuf->posy;
 				dir = rand() % 4;
 				switch (dir)
 				{
 				case(0) :			//*** Up. ***
-					if (fuf.posy > 0) fuf.posy--;
+					if (fuf->posy > 0) fuf->posy--;
 					break;
 				case(1) :			//*** Down. ***
-					if (fuf.posy < fuf.Height()) fuf.posy++;
+					if (fuf->posy < fuf->Height() - 1) fuf->posy++;
 					break;
 				case(2) :			//*** Left. ***
-					if (fuf.posx > 0) fuf.posx--;
+					if (fuf->posx > 0) fuf->posx--;
 					break;
 				case(3) :			//*** Right. ***
-					if (fuf.posx < fuf.Width()) fuf.posx++;
+					if (fuf->posx < fuf->Width() - 1) fuf->posx++;
 					break;
 				}
-				st = fuf.GetPosVal();
+				st = fuf->GetPosVal();
+
+				clen = fuf->Fire(fuf->posx, fuf->posy);
+				if (st != fuf->water && st != fuf->hit && st != fuf->miss)
+				{
+					clCUI->PaintHM (true, PLAYER, fuf);
+					isshot = true;	
+					if (clen != 0) 
+					{
+						clCUI->RemShipState(PLAYER, clen, 10);
+						isshot = true;
+						nextship = true;
+					}
+					wasmiss = false;
+				}
+				else if (st == fuf->water)
+				{
+					clCUI->PaintHM(false, PLAYER, fuf);
+					isturn = false;
+					if (isshot)
+					{
+						isshot = false;						//TODO: ship find.
+						wasmiss = true;
+						if (fuf->posx > 0) fuf->posx--;
+						st = fuf->GetPosVal();
+						if (st == fuf->hit) continue;
+						if (fuf->posx < fuf->Width() - 1) fuf->posx++; if (fuf->posx < fuf->Width() - 1) fuf->posx++;
+						st = fuf->GetPosVal();
+						if (st == fuf->hit) continue;
+						if (fuf->posx > 0) fuf->posx--; if (fuf->posy < fuf->Height() - 1) fuf->posy++;
+						st = fuf->GetPosVal();
+						if (st == fuf->hit) continue;
+						if (fuf->posy > 0) fuf->posy--; if (fuf->posy > 0) fuf->posy--;
+						st = fuf->GetPosVal();
+						if (st == fuf->hit) continue;
+					}
+				}
+				else if (st == fuf->miss)
+				{
+					if (fuf->posx > 0) fuf->posx--;
+					st = fuf->GetPosVal();
+					if (st == fuf->hit) continue;
+					if (fuf->posx < fuf->Width() - 1) fuf->posx++; if (fuf->posx < fuf->Width() - 1) fuf->posx++;
+					st = fuf->GetPosVal();
+					if (st == fuf->hit) continue;
+					if (fuf->posx > 0) fuf->posx--; if (fuf->posy < fuf->Height() - 1) fuf->posy++;
+					st = fuf->GetPosVal();
+					if (st == fuf->hit) continue;
+					if (fuf->posy > 0) fuf->posy--; if (fuf->posy > 0) fuf->posy--;
+					st = fuf->GetPosVal();
+					if (st == fuf->hit) continue;
+				}
 			}
 			else
 			{
-				fuf.posx = rand() % fuf.Width();
-				fuf.posy = rand() % fuf.Height();
-				st = fuf.GetPosVal();
+				fuf->posx = rand() % fuf->Width();
+				fuf->posy = rand() % fuf->Height();
+				st = fuf->GetPosVal();
 				while (hardchoice)
 				{
 					hardchoice = rand() % 2;
 					if (hardchoice)
 					{
-						fuf.posx = rand() % fuf.Width();
-						fuf.posy = rand() % fuf.Height();
-						st = fuf.GetPosVal();
-						if (st != fuf.water && st != fuf.hit && st != fuf.miss) break;
+						fuf->posx = rand() % fuf->Width();
+						fuf->posy = rand() % fuf->Height();
+						st = fuf->GetPosVal();
+						if (st != fuf->water && st != fuf->hit && st != fuf->miss) break;
 					}
 				}
 			}
-			cellcount = fuf.Fire(fuf.posx, fuf.posy, cellcount);
-			if (st != fuf.water && st != fuf.hit && st != fuf.miss)
+			clen = fuf->Fire(fuf->posx, fuf->posy);
+			if (st != fuf->water && st != fuf->hit && st != fuf->miss)
 			{
-				clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-				clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
-				printf("%c", fuf.hit);
-				clCUI.SetColor(clCUI.White, clCUI.Black);
-				if (!CheckSingleShip(fuf)) 
-				{
-					isshot = true;
-					//clCUI.WriteDot(fuf);
-				}
+				clCUI->PaintHM(true,  PLAYER, fuf);
+				if (clen != 0) clCUI->RemShipState(PLAYER, clen, 10);
+				isshot = true;							//TODO: Aftermath().
+				wasmiss = false;
 			}
-			else if (st == fuf.water)
+			else if (st == fuf->water)
 			{
-				clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-				clCUI.SetColor(clCUI.LightCyan, clCUI.LightBlue);
-				printf("%c", fuf.miss);
-				clCUI.SetColor(clCUI.White, clCUI.Black);
+				clCUI->PaintHM(false, PLAYER, fuf);
+				if (isshot) isshot = false;				//TODO: ship find.
 				isturn = false;
 			}
 		}
 		break;
 	case (0) :						//*** Easy level. ***
-		while (cellcount > 0 && isturn)
+		while (fuf->shipsnum[0] > 0 && isturn)
 		{
 			Sleep(500);
-			fuf.posx = rand() % fuf.Width();
-			fuf.posy = rand() % fuf.Height();
-			cstate st = fuf.GetPosVal();
-			cellcount = fuf.Fire(fuf.posx, fuf.posy, cellcount);
-			if (st != fuf.water && st != fuf.hit && st != fuf.miss)
+			fuf->posx = rand() % fuf->Width();
+			fuf->posy = rand() % fuf->Height();
+			cstate st = fuf->GetPosVal();
+			clen = fuf->Fire(fuf->posx, fuf->posy);
+			if (st != fuf->water && st != fuf->hit && st != fuf->miss)
 			{
-				clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-				clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
-				printf("%c", fuf.hit);
-				clCUI.SetColor(clCUI.White, clCUI.Black);
+				clCUI->PaintHM(true,  PLAYER, fuf);
+				if (clen != 0) clCUI->RemShipState(PLAYER, clen, 10);
 			}
-			else if (st == fuf.water)
+			else if (st == fuf->water)
 			{
-				clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-				clCUI.SetColor(clCUI.LightCyan, clCUI.LightBlue);
-				printf("%c", fuf.miss);
-				clCUI.SetColor(clCUI.White, clCUI.Black);
+				clCUI->PaintHM(false, PLAYER, fuf);
 				isturn = false;
 			}
 		}
 		break;
 	}
-	while (cellcount > 0 && isturn)
-	{
-		Sleep(500);
-		fuf.posx = rand() % fuf.Width();
-		fuf.posy = rand() % fuf.Height();
-		cstate st = fuf.GetPosVal();
-		cellcount = fuf.Fire(fuf.posx, fuf.posy, cellcount);
-		if (st != fuf.water && st != fuf.hit && st != fuf.miss)
-		{
-			clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-			clCUI.SetColor(clCUI.Yellow, clCUI.LightBlue);
-			printf("%c", fuf.hit);
-			clCUI.SetColor(clCUI.White, clCUI.Black);
-		}
-		else if (st == fuf.water)
-		{
-			clCUI.GotoXY(fuf.posx + clCUI.x + 1, fuf.posy + clCUI.y + 1);
-			clCUI.SetColor(clCUI.LightCyan, clCUI.LightBlue);
-			printf("%c", fuf.miss);
-			clCUI.SetColor(clCUI.White, clCUI.Black);
-			isturn = false;
-		}
-		if (st == fuf.water) isturn = false;
-	}
-	return cellcount;
 }

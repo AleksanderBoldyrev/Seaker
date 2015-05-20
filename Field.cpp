@@ -184,22 +184,180 @@ bool Field::ShipSpaceIsChecked(units x, units y, units l, dir vdir)
 	return b;
 }
 
-void Aftermath(units px, units py)
+unsigned short Field::Aftermath(units px, units py)
 {
-
+	unsigned short countlen = 0, cs1 = 0, cs2 = 0, ps1 = px, ps2 = py, lencheck = 1, posxs = px, posys = py;
+	bool d = 0;								//*** 1 ~ hor., 0 ~ vert. ***
+	this->SetPos(px,py);
+	cstate cs = this->GetPosVal();
+	if (cs == onesh) countlen = 1;
+	else if (cs == left)
+	{
+		do
+		{
+			countlen++; ps1++;
+			this->SetPos(ps1, py);
+			cs = this->GetPosVal();
+			if (cs != hit && cs != water && cs != miss && cs != err) 
+			{
+				px = posxs; py = posys;
+				this->SetPos(px, py);
+				return 0;
+			}
+		} while (cs == hit && cs != err && ps1 < this->Width() - 1);
+		px = posxs; py = posys;
+		this->SetPos(px, py);
+	}
+	else if (cs == right)
+	{
+		do
+		{
+			countlen++; ps1--;
+			this->SetPos(ps1, py);
+			cs = this->GetPosVal();
+			if (cs != hit && cs != water && cs != miss && cs != err) 
+			{
+				px = posxs; py = posys;
+				this->SetPos(px, py);
+				return 0;
+			}
+		} while (cs == hit && cs != err && ps1 > 0);
+		px = posxs; py = posys;
+		this->SetPos(px, py);
+	}
+	else if (cs == up)
+	{
+		do
+		{
+			countlen++; ps2++;
+			this->SetPos(px, ps2);
+			cs = this->GetPosVal();
+			if (cs != hit && cs != water && cs != miss && cs != err) 
+			{
+				px = posxs; py = posys;
+				this->SetPos(px, py);
+				return 0;
+			}
+		} while (cs == hit && cs != err && ps2 < this->Height() - 1);
+		px = posxs; py = posys;
+		this->SetPos(px, py);
+	}
+	else if (cs == down)
+	{
+		do
+		{
+			countlen++; ps2--;
+			this->SetPos(px, ps2);
+			cs = this->GetPosVal();
+			if (cs != hit && cs != water && cs != miss && cs != err) 
+			{
+				px = posxs; py = posys;
+				this->SetPos(px, py);
+				return 0;
+			}
+		} while (cs == hit && cs != err && ps2 > 0);
+		px = posxs; py = posys;
+		this->SetPos(px, py);
+	}
+	else if (cs == body)						//TODO: 2 bodies (v and h).
+	{
+		px++;
+		this->SetPos(px, py);
+		cs1 = this->GetPosVal();
+		px--; px--;
+		this->SetPos(px, py);
+		cs2 = this->GetPosVal();
+		px++;
+		if ((cs1 != hit && cs1 != water && cs1 != miss) || (cs2 != hit && cs2 != water && cs2 != miss)) d = 1;
+		switch (d)
+		{
+		case (1) :
+			do
+			{
+				ps1++;
+				this->SetPos(ps1, py);
+				cs = this->GetPosVal();
+				if (cs == hit) lencheck++;
+				if (cs != hit && cs != water && cs != miss && cs != err) 
+				{
+					px = posxs; py = posys;
+					this->SetPos(px, py);
+					return 0;
+				}
+			} while (cs == hit && cs != err);
+			px = posxs; py = posys;
+			this->SetPos(px, py);
+			do
+			{
+				ps1--;
+				this->SetPos(ps1, py);
+				cs = this->GetPosVal();
+				if (cs == hit) lencheck++;
+				if (cs != hit && cs != water && cs != miss && cs != err) 
+				{
+					px = posxs; py = posys;
+					this->SetPos(px, py);
+					return 0;
+				}
+			} while (cs == hit && cs != err);
+			px = posxs; py = posys;
+			this->SetPos(px, py);
+			break;
+		case (0) :
+			do
+			{
+				ps2++;
+				this->SetPos(px, ps2);
+				cs = this->GetPosVal();
+				if (cs == hit) lencheck++;
+				if (cs != hit && cs != water && cs != miss && cs != err)
+				{
+					px = posxs; py = posys;
+					this->SetPos(px, py);
+					return 0;
+				}
+			} while (cs == hit && cs != err);
+			px = posxs; py = posys;
+			this->SetPos(px, py);
+			do
+			{
+				ps2--;
+				this->SetPos(px, ps2);
+				cs = this->GetPosVal();
+				if (cs == hit) lencheck++;
+				if (cs != hit && cs != water && cs != miss && cs != err) 
+				{
+					px = posxs; py = posys;
+					this->SetPos(px, py);
+					return 0;
+				}
+			} while (cs == hit && cs != err);
+			px = posxs; py = posys;
+			this->SetPos(px, py);
+			break;
+		}
+		if		(lencheck == 4) countlen = 4;
+		else if (lencheck == 3) countlen = 3;
+	}
+	px = posxs; py = posys;
+	this->SetPos(px, py);
+	if (countlen != 0) this->shipsnum[countlen]--;
+	return countlen;
 }
 
-unsigned short Field::Fire(units px, units py, unsigned short cellcount)
+unsigned short Field::Fire(units px, units py)
 {
+	unsigned short count = 0;
 	cstate st = this->GetPosVal();
 	if (st != this->water && st != this->hit && st != this->miss)
 	{
+		count = Aftermath(px, py);
 		SetCell(px, py, hit);
-		cellcount--;
+		this->shipsnum[0]--;
 	}
 	else if (st == this->water)
 	{
 		SetCell(px, py, miss);
 	}
-	return cellcount;
+	return count;
 }

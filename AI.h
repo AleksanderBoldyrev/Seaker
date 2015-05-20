@@ -9,13 +9,15 @@
 class AI
 {
 	bool			level;
+	bool			isshot  = false;
 public:
 					AI();
-					AI(bool lv);
 					~AI();
 	bool			Getlevel();
-	void 			PlaceShipsAI(Field& fcf);
-	unsigned short 	MakeMove(CUI clCUI, AI art, Field& fuf, Field& fcf, unsigned short cellcount);
+	void			Setlevel(bool lv);
+	void 			PlaceShipsAI(CUI* clCUI, Field* fcf);
+	bool			PieceOfShip(cstate s, Field* fuf);
+	void		 	MakeMove(CUI* clCUI, AI* art, Field* fuf, Field* fcf);
 };
 
 #endif
